@@ -8,33 +8,53 @@ import java.util.ArrayList;
  * @author bjoern
  *
  */
-public class Rule {
+public class Rule
+{
 
 	// the rule left hand side
 	private NonTerminal lhs;
 	// the rule right hand side
 	private ArrayList<Symbol> rhs;
 
-	
 	/**
 	 * Creates a rule with the given parameters.
 	 * 
 	 * @param lhs the rule left hand side.
 	 * @param rhs the rule right hand side
 	 */
-	public Rule(NonTerminal lhs, ArrayList<Symbol> rhs) {
+	public Rule(NonTerminal lhs, ArrayList<Symbol> rhs)
+	{
 		super();
 		this.lhs = lhs;
 		this.rhs = rhs;
 	}
 
-	@Override
-	public String toString() {
-		return "[" + lhs + " --> " + rhs + "]";
+	/*
+	 * @Override
+	 * public String toString() {
+	 * return "[" + lhs + " --> " + rhs + "]";
+	 * }
+	 */
+
+	public String toString()
+	{
+		String output = "{" + lhs.getUniqueIdentifier() + " [label=\"" + lhs.toString() + "\"]} -> {";
+		for(Symbol item : rhs)
+		{
+			if(item instanceof NonTerminal)
+				output += "" + ((NonTerminal) item).getUniqueIdentifier() + " ";
+			else
+				output += item.toString() + " ";
+		}
+		output = output.trim();
+		output += "}";
+
+		return output;
 	}
-	
+
 	@Override
-	public int hashCode() {
+	public int hashCode()
+	{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((lhs == null) ? 0 : lhs.hashCode());
@@ -43,40 +63,49 @@ public class Rule {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(Object obj)
+	{
+		if(this == obj)
 			return true;
-		if (obj == null)
+		if(obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if(getClass() != obj.getClass())
 			return false;
 		Rule other = (Rule) obj;
-		if (lhs == null) {
-			if (other.lhs != null)
+		if(lhs == null)
+		{
+			if(other.lhs != null)
 				return false;
-		} else if (!lhs.equals(other.lhs))
+		}
+		else if(!lhs.equals(other.lhs))
 			return false;
-		if (rhs == null) {
-			if (other.rhs != null)
+		if(rhs == null)
+		{
+			if(other.rhs != null)
 				return false;
-		} else if (!rhs.equals(other.rhs))
+		}
+		else if(!rhs.equals(other.rhs))
 			return false;
 		return true;
 	}
 
-	public NonTerminal getLhs() {
+	public NonTerminal getLhs()
+	{
 		return lhs;
 	}
 
-	public void setLhs(NonTerminal lhs) {
+	public void setLhs(NonTerminal lhs)
+	{
 		this.lhs = lhs;
 	}
 
-	public ArrayList<Symbol> getRhs() {
+	public ArrayList<Symbol> getRhs()
+	{
 		return rhs;
 	}
 
-	public void setRhs(ArrayList<Symbol> rhs) {
+	public void setRhs(ArrayList<Symbol> rhs)
+	{
 		this.rhs = rhs;
 	}
 }

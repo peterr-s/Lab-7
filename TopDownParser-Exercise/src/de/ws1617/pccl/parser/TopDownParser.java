@@ -66,11 +66,11 @@ public class TopDownParser
 		// clone terminal arraylist
 		ArrayList<Terminal> inputClone = new ArrayList<>();
 		inputClone.addAll(input);
-		
+
 		// clone rule stack
 		Stack<Rule> analysisClone = new Stack<>();
 		analysisClone.addAll(analysis);
-		
+
 		return new TopDownParser(grammar, lexicon, inputClone, stateClone, analysisClone);
 	}
 
@@ -87,22 +87,24 @@ public class TopDownParser
 
 	public ArrayList<TopDownParser> successors()
 	{
-		/*ArrayList<TopDownParser> successors = new ArrayList<>();
+		/*
+		 * ArrayList<TopDownParser> successors = new ArrayList<>();
+		 * 
+		 * // go through each symbol (use index to track which one is active)
+		 * for(int i = 0; i < state.size(); i ++)
+		 * {
+		 * Symbol symbol = state.get(i);
+		 * 
+		 * // if the symbol can be expanded make predictions by altering the symbol at this index
+		 * if(symbol instanceof NonTerminal)
+		 * successors.addAll(predict(i));
+		 * }
+		 * 
+		 * System.out.println("returning " + successors.size() + " successors");
+		 * 
+		 * return successors;
+		 */
 
-		// go through each symbol (use index to track which one is active)
-		for(int i = 0; i < state.size(); i ++)
-		{
-			Symbol symbol = state.get(i);
-
-			// if the symbol can be expanded make predictions by altering the symbol at this index
-			if(symbol instanceof NonTerminal)
-				successors.addAll(predict(i));
-		}
-
-		System.out.println("returning " + successors.size() + " successors");
-
-		return successors;*/
-		
 		// at this point I think successors is just an alias of predict...
 		return predict();
 	}
@@ -115,7 +117,7 @@ public class TopDownParser
 	private ArrayList<TopDownParser> predict()
 	{
 		ArrayList<TopDownParser> derivations = new ArrayList<>();
-		
+
 		// if the stack is empty there's nothing to derive
 		if(state.isEmpty())
 			return derivations;
@@ -135,9 +137,9 @@ public class TopDownParser
 			{
 				derivations.add(ruleClone);
 				derivations.addAll(ruleClone.predict());
-				
+
 				// DEBUG: print rule
-				//System.out.println(ruleClone.getAnalysis().peek() + " " + ruleClone.getAnalysis().size());
+				// System.out.println(ruleClone.getAnalysis().peek() + " " + ruleClone.getAnalysis().size());
 			}
 		}
 
@@ -151,9 +153,9 @@ public class TopDownParser
 			{
 				derivations.add(ruleClone);
 				derivations.addAll(ruleClone.predict());
-				
+
 				// DEBUG: print rule
-				//System.out.println(ruleClone.getAnalysis().peek() + " " + ruleClone.getAnalysis().size());
+				// System.out.println(ruleClone.getAnalysis().peek() + " " + ruleClone.getAnalysis().size());
 			}
 		}
 
@@ -171,29 +173,43 @@ public class TopDownParser
 	{
 		// remove top nonterminal
 		NonTerminal thisNT = state.pop(); // capture for making rule later
-		
-		// add new symbols in reverse order
-		for(int i = rule.size() - 1; i >= 0; i--)
+
+		ArrayList<Symbol> clones = new ArrayList<>();
+		for(Symbol item : rule)
 		{
-			Symbol s = rule.get(i);
-			
+			if(item instanceof NonTerminal)
+			{
+				NonTerminal clone = ((NonTerminal) item).clone();
+				clone.setUniqueIdentifier();
+				clones.add(clone);
+			}
+
+			else if(item instanceof Terminal)
+				clones.add(((Terminal) item).clone());
+		}
+
+		// add new symbols in reverse order
+		for(int i = clones.size() - 1; i >= 0; i --)
+		{
+			Symbol s = clones.get(i);
+
 			if(s instanceof NonTerminal) // apply grammar transformations
-				state.push((NonTerminal)s);
-			
+				state.push((NonTerminal) s); // use clone so that it has a new memory address/unique id for graph generation later
 			else if(s instanceof Terminal)
 			{
 				// always dealing w head; if it doesn't match first element of input it isn't right
 				if(input.isEmpty())
 					return false;
-				if(((Terminal)s).equals(input.get(0)))
+				if(((Terminal) s).equals(input.get(0)))
 					input.remove(0); // no use in making clone; if this fails the object will be discarded
-				else return false;
+				else
+					return false;
 			}
 		}
-		
+
 		// add rule to log
-		analysis.push(new Rule(thisNT, rule));
-		
+		analysis.push(new Rule(thisNT, clones));
+
 		// as long as there aren't too many nonterminals left it's ok
 		return !isTooLong();
 	}
@@ -211,11 +227,13 @@ public class TopDownParser
 
 	public String toString()
 	{
-		String str = "";
-		
+		String str = "digraph {\n";
+
 		for(Rule r : analysis)
-			str += r.toString() + " ";
-		
+			str += "\t" + r.toString() + "\n";
+
+		str += "}";
+
 		return str;
 	}
 

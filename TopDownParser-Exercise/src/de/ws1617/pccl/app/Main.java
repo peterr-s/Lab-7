@@ -1,11 +1,14 @@
 package de.ws1617.pccl.app;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashSet;
 
 import de.ws1617.pccl.grammar.*;
 import de.ws1617.pccl.parser.TopDownParser;
 import de.ws1617.pccl.search.BFS_TopDown;
+import de.ws1617.pccl.tree.TreeUtils;
 
 public class Main
 {
@@ -22,8 +25,24 @@ public class Main
 				input[i] = new Terminal(args[i + 3].toLowerCase());
 
 			HashSet<TopDownParser> parses = BFS_TopDown.search(input, grammar, lexicon, startSymbol);
+			System.out.println(parses.size() + " parses found: ");
 			for(TopDownParser parse : parses)
+			{
+				String path = "./tree_" + System.identityHashCode(parse);
+				/*
+				 * PrintWriter output = new PrintWriter(new File(path), "UTF-8");
+				 *
+				 * String dot = parse.toString();
+				 *
+				 * output.print(dot);
+				 * output.close();
+				 */
+
+				TreeUtils.createJPG(path, parse.getAnalysis(), startSymbol);
+
+				// System.out.println(path + ":");
 				System.out.println(parse.toString());
+			}
 		}
 		catch (IOException e)
 		{

@@ -6,21 +6,34 @@ package de.ws1617.pccl.grammar;
  * @author bjoern
  *
  */
-public class NonTerminal extends Symbol {
+public class NonTerminal extends Symbol
+{
+	private int id;
 
 	/**
 	 * Creates a NonTerminal based on the given String value.
 	 * 
 	 * @param value the String value.
 	 */
-	public NonTerminal(String value) {
+	public NonTerminal(String value)
+	{
 
 		// don't alter input argument
 		String toSet = String.valueOf(value);
-		if (toSet.startsWith("[") && toSet.endsWith("]")) {
+		if(toSet.startsWith("[") && toSet.endsWith("]"))
+		{
 			toSet = toSet.substring(1, toSet.length() - 1);
 		}
 		setValue(toSet);
+
+		setUniqueIdentifier();
+	}
+
+	public NonTerminal(String value, int id)
+	{
+		this(value);
+
+		this.id = id;
 	}
 
 	/**
@@ -29,7 +42,8 @@ public class NonTerminal extends Symbol {
 	 * @param symb the String representation to check.
 	 * @return
 	 */
-	public static boolean isNonTerminal(String symb) {
+	public static boolean isNonTerminal(String symb)
+	{
 		return symb.startsWith("[") && symb.endsWith("]");
 	}
 
@@ -37,8 +51,18 @@ public class NonTerminal extends Symbol {
 	 * Returns a deep copy of the given {@link NonTerminal}.
 	 * 
 	 */
-	public NonTerminal clone() {
-		return new NonTerminal(String.valueOf(getValue()));
+	public NonTerminal clone()
+	{
+		return new NonTerminal(String.valueOf(getValue()), id);
 	}
 
+	public int getUniqueIdentifier()
+	{
+		return id;
+	}
+
+	public void setUniqueIdentifier()
+	{
+		id = System.identityHashCode(this);
+	}
 }
