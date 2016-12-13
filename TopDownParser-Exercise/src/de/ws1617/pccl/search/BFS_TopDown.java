@@ -34,19 +34,7 @@ public class BFS_TopDown
 		{
 			TopDownParser top = agenda.poll();
 			if(top.isGoal())
-			//{
 				results.add(top);
-			//}
-			/*else
-			{
-				for(TopDownParser succ : top.successors())
-				{
-					if(succ.isGoal())
-						results.add(succ);
-					else
-						agenda.add(succ);
-				}
-			}*/
 		}
 
 		return results;

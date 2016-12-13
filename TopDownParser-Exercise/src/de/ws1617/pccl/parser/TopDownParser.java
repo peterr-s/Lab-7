@@ -87,24 +87,6 @@ public class TopDownParser
 
 	public ArrayList<TopDownParser> successors()
 	{
-		/*
-		 * ArrayList<TopDownParser> successors = new ArrayList<>();
-		 * 
-		 * // go through each symbol (use index to track which one is active)
-		 * for(int i = 0; i < state.size(); i ++)
-		 * {
-		 * Symbol symbol = state.get(i);
-		 * 
-		 * // if the symbol can be expanded make predictions by altering the symbol at this index
-		 * if(symbol instanceof NonTerminal)
-		 * successors.addAll(predict(i));
-		 * }
-		 * 
-		 * System.out.println("returning " + successors.size() + " successors");
-		 * 
-		 * return successors;
-		 */
-
 		// at this point I think successors is just an alias of predict...
 		return predict();
 	}
@@ -122,12 +104,7 @@ public class TopDownParser
 		if(state.isEmpty())
 			return derivations;
 
-		// if the given symbol is a terminal it can't be derived any further
 		NonTerminal thisSymbol = state.peek();
-		/*
-		 * if(!(thisSymbol instanceof NonTerminal))
-		 * return derivations;
-		 */ // terminals dealt with in successors(); no need to check again
 
 		// apply grammatical rules
 		for(ArrayList<Symbol> grammarRule : grammar.getRuleForLHS(thisSymbol))
@@ -137,9 +114,6 @@ public class TopDownParser
 			{
 				derivations.add(ruleClone);
 				derivations.addAll(ruleClone.predict());
-
-				// DEBUG: print rule
-				// System.out.println(ruleClone.getAnalysis().peek() + " " + ruleClone.getAnalysis().size());
 			}
 		}
 
@@ -153,9 +127,6 @@ public class TopDownParser
 			{
 				derivations.add(ruleClone);
 				derivations.addAll(ruleClone.predict());
-
-				// DEBUG: print rule
-				// System.out.println(ruleClone.getAnalysis().peek() + " " + ruleClone.getAnalysis().size());
 			}
 		}
 

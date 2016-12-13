@@ -1,8 +1,6 @@
 package de.ws1617.pccl.app;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashSet;
 
 import de.ws1617.pccl.grammar.*;
@@ -29,18 +27,9 @@ public class Main
 			for(TopDownParser parse : parses)
 			{
 				String path = "./tree_" + System.identityHashCode(parse);
-				/*
-				 * PrintWriter output = new PrintWriter(new File(path), "UTF-8");
-				 *
-				 * String dot = parse.toString();
-				 *
-				 * output.print(dot);
-				 * output.close();
-				 */
 
 				TreeUtils.createJPG(path, parse.getAnalysis(), startSymbol);
 
-				// System.out.println(path + ":");
 				System.out.println(parse.toString());
 			}
 		}
